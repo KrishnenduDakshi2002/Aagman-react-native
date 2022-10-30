@@ -25,6 +25,7 @@ export default function App() {
           <Stack.Screen name="HomeTab" component={HomeTabNavigator} />
           <Stack.Screen name="FilterScreen" component={FilterComponent} />
           <Stack.Screen name="DateTimePicker" component={Example} />
+          
         </Stack.Navigator>
       </SearchFilterContextProvider>
     </NavigationContainer>
