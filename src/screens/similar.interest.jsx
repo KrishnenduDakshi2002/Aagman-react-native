@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,18 +7,31 @@ import {
   TouchableOpacity,
   FlatList,
   ImageBackground,
-  Platform
+  Platform,
+  useWindowDimensions,
+  Pressable,
+  Button,
+  ScrollView
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import SearchBarComponent from "../components/atoms/searchBar.component";
+
+import { Ionicons, Feather } from "react-native-vector-icons";
+import QueryTileComponetn from "../components/atoms/queries.component";
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import People from './people';
+
+const Stack = createNativeStackNavigator();
 
 const details = {
   data: [
     {id:1,  name: "DSA",       image: require('../../assets/Similarinterest/dsa.png'),          },
-    {id:2,  name: "Web Development",     image: require('../../assets/Similarinterest/dsa.png'),           },
-    {id:3,  name: "App Development",         image: require('../../assets/Similarinterest/dsa.png'),            },
-    {id:4,  name: "Machine Learning",       image: require('../../assets/Similarinterest/dsa.png'),          },
-    {id:5,  name: "Hackathon",          image: require('../../assets/Similarinterest/dsa.png'),           },
-    {id:6,  name: "UI-UX",      image: require('../../assets/Similarinterest/dsa.png'),        },
+    {id:2,  name: "Web Development",     image: require('../../assets/Similarinterest/webdev.png'),           },
+    {id:3,  name: "App Development",         image: require('../../assets/Similarinterest/appdev.png'),            },
+    {id:4,  name: "Machine Learning",       image: require('../../assets/Similarinterest/ml.jpg'),          },
+    {id:5,  name: "Hackathon",          image: require('../../assets/Similarinterest/hackathon.png'),           },
+    {id:6,  name: "UI-UX",      image: require('../../assets/Similarinterest/uiux.jpg'),        },
     {id:7,  name: "IoT",      image: require('../../assets/Similarinterest/dsa.png'),        },
     {id:8,  name: "Graphic Design",             image: require('../../assets/Similarinterest/dsa.png'),             },
     {id:9,  name: "Block Chain",         image: require('../../assets/Similarinterest/dsa.png'),           },
@@ -28,14 +41,20 @@ const details = {
   ]
 };
 
-function SimilarInterestScreen ({ navigation, route }) {
+
+
+// function SimilarInterestScreen ({ navigation, route }) {
+  const SimilarInterestScreen = ({ navigation }) => {
+
 //   constructor(props) {
     // super(props);
     
 //   }
+  const { styles, width, height } = useStyles();
+  const [searchText, setSearchText] = useState("");
     return (
        <ImageBackground>
-      <KeyboardAwareScrollView
+      <ScrollView
         style={styles.con}
         contentOffset={{ x: 0, y: 0 }}
         scrollEventThrottle={0}
@@ -48,13 +67,46 @@ function SimilarInterestScreen ({ navigation, route }) {
         enableResetScrollToCoords={false}>
       <View style={styles.container}>
       <View style={styles.header}>
-      <Text style={styles.headerText}>Find people with similar interest</Text>
+      {/* <Text style={styles.headerText}>Find people with similar interest</Text> */}
+      <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingTop: 30,
+            paddingBottom: 10,
+            paddingLeft: 10,
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: "bold",
+              fontSize: height / 40,
+              paddingLeft: 10,
+            }}
+          >
+          Find people with similar interest
+          </Text>
+          <Pressable
+            style={({ pressed }) => [
+              { position: "absolute", right: 30, opacity: pressed ? 0.5 : 1 },
+            ]}
+          >
+            <Feather name="download" size={28} color="black" />
+          </Pressable>
+        </View>
+        <SearchBarComponent
+          placeholder={"Search topic"}
+          navigation={navigation}
+          searchedValue={searchText}
+          handleSearchText={(text) => setSearchText(text)}
+          filterScreenName={"FilterScreen"}
+        />
       </View>
       <View style={styles.container}>
-        <FlatList
+        <FlatList navigation={navigation}
           data={details.data}
           renderItem={({item}) =>
-          <TouchableOpacity onPress={() =>details.props.navigation.navigate('Detail', {
+          <View onPress={() =>details.props.navigation.navigate('Detail', {
             id : item.id,
             name : item.name,
             image : item.image,
@@ -65,39 +117,40 @@ function SimilarInterestScreen ({ navigation, route }) {
             <View style={styles.cardContent}>
               <Text style={styles.name}>{item.name}</Text>
 
-              <TouchableOpacity style={styles.findButton} onPress={()=> details.clickEventListener()}>
-                <Text style={styles.findButtonText}>Find</Text>
+              <TouchableOpacity style={styles.findButton} onPress={()=> navigation.navigate('People')}>
+                <Text style={styles.findButtonText}>Find People</Text>
               </TouchableOpacity>
             </View>
           </View>
-          </TouchableOpacity>
+          </View>
         }
         keyExtractor = { (item, index) => index.toString() }
         />
       </View>
       </View>
-      </KeyboardAwareScrollView>
+      </ScrollView>
       </ImageBackground>
     );
 }
-
+const useStyles = () => {
+  const { width, height } = useWindowDimensions();
 const styles = StyleSheet.create({
   container:{
     flex:1,
     marginTop:20,
   },
-  header:{
-    backgroundColor: '#5DA7DB',
-    borderRadius: 20,
-    height: 50,
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
-  headerText:{
-    fontSize: 20,
-    alignSelf: 'center',
-    color: 'white',
-  },
+  // header:{
+  //   backgroundColor: '#5DA7DB',
+  //   borderRadius: 20,
+  //   height: 50,
+  //   justifyContent: 'center',
+  //   alignContent: 'center',
+  // },
+  // headerText:{
+  //   fontSize: 20,
+  //   alignSelf: 'center',
+  //   color: 'white',
+  // },
   cardContent: {
     flex: 1,
     alignItems: 'center',
@@ -136,7 +189,7 @@ const styles = StyleSheet.create({
   findButton: {
     marginTop:10,
     height:35,
-    width:100,
+    width:150,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -148,5 +201,7 @@ const styles = StyleSheet.create({
     fontSize:15,
   },
 });
+return { styles, width, height };
+};
 
 export default SimilarInterestScreen
