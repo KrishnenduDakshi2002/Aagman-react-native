@@ -6,11 +6,11 @@ View,
 useWindowDimensions } from 'react-native'
 
 
-const BlogScreen = ()=>{
+const QueryTileComponetn = ()=>{
     const { styles } = useStyles();
     return(
     <View style={styles.container}>
-        <Text> this is blog screen </Text>
+        <Text> Hello world </Text>
     </View>
 )
 }
@@ -20,9 +20,11 @@ const useStyles = ()=>{
     const {width,height} = useWindowDimensions();
     const styles = StyleSheet.create({
         container:{
-            flex:1,
+            width: width,
+            height: 150,
             justifyContent:"center",
             alignItems:"center",
+            backgroundColor:'pink'
         },
     });
     return {styles};
@@ -31,4 +33,4 @@ const useStyles = ()=>{
 
 
 
-export default BlogScreen;
+export default QueryTileComponetn;

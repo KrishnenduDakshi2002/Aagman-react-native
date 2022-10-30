@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo,useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,8 +6,6 @@ import {
   useWindowDimensions,
   StatusBar,
   SafeAreaView,
-  Pressable,
-  ScrollView,
   FlatList,
 } from "react-native";
 import HomeHeaderComponent from "../components/molecules/homeHeader.component";
@@ -19,17 +17,17 @@ import SearchBarComponent from "../components/atoms/searchBar.component";
 import { useFilterState } from "../contexts/filterContext";
 
 
-import { EVENT_STATUS,EVENT_MODE,EVENT_TYPE } from "../utils/filterCheckBoxReducer";
-
 const renderItemFunction = ({ item, index, seperator }) => {
   return (
     <HomeEventItemComponent
       eventName={item.eventName}
+      description ={item.description}
       startTime={item.startTime}
       endTime={item.endTime}
       startDate={item.startDate}
       endDate={item.endDate}
       status={item.status}
+      mode = {item.mode}
     />
   );
 };
@@ -58,7 +56,7 @@ const HomeScreen = ({ navigation, route }) => {
   const { styles } = useStyles();
   const [searchText, setSearchText] = useState(""); // storing our search query
   const [events, _] = useState(EventData); // storing the events
-
+  
   const state = useFilterState(); // this is the state from searchFilter screen
   // and will be used for filtering out evnets
     // console.log("Printing filter state [homescreen]->",state);
@@ -70,17 +68,21 @@ const HomeScreen = ({ navigation, route }) => {
       return event.eventName.toLowerCase().includes(searchText.toLowerCase());
     });
   }, [events,searchText]);  // only re-render when events or searchtext changes
+  
 
-  filteredEvents = useMemo(()=>HandleFilters(state,events),[state,events]);
+  //for handling filters
+  filteredEvents = useMemo(()=>HandleFilters(state,filteredEvents),[state,filteredEvents]);
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" translucent={false} />
       <HomeHeaderComponent navigation={navigation} />
       <SearchBarComponent
+      placeholder={"Search event"}
         navigation={navigation}
         searchedValue={searchText}
         handleSearchText={(text) => setSearchText(text)}
+        filterScreenName = {"FilterScreen"}
       />
 
       <FlatList

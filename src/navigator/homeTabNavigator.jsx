@@ -19,7 +19,7 @@ import EventCalenderComponent from "../components/molecules/eventCalendar.compon
 import { _fonts_ } from "../styles/fonts";
 import { _colors_ } from "../styles/colors";
 import DiscussionScreen from "../screens/discussion.screen";
-import BlogScreen from "../screens/blog.screen";
+import BlogScreen from "../screens/blogs.screen";
 import SearchScreen from "../screens/search.screen";
 
 const Tab = createMaterialBottomTabNavigator();

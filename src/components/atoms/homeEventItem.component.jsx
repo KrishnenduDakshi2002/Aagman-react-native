@@ -17,6 +17,19 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 
 dayjs.extend(localizedFormat);
 
+function setStatusIndicator(status){
+    switch(status){
+      case "ongoing":
+        return "success";
+      case "upcoming":
+          return "primary";
+      case "finished":
+          return "error";
+      default :
+        return "primary";
+    }
+}
+
 const HomeEventItemComponent = (props) => {
   const { styles, width, height } = useStyles();
   const [fontsLoaded] = useFonts(_fonts_);
@@ -45,7 +58,11 @@ const HomeEventItemComponent = (props) => {
             {props.eventName}
           </Text>
         </View>
-        <View style={styles.eventDescription}></View>
+        {/* <View style={styles.eventDescription}>
+          <Text>
+            {props.description}
+          </Text>
+        </View> */}
         <View style={styles.dateContainer}>
           <Text style={{ fontFamily: "regular", fontSize: height / 55 }}>
             {date}
@@ -56,22 +73,38 @@ const HomeEventItemComponent = (props) => {
             {time}
           </Text>
         </View>
-
         <View style={styles.status}>
-          <Badge status="success" />
-          <Text style={{ fontFamily: "light", fontSize: height / 65 }}>
+          <Text
+            style={{
+              fontFamily: "light",
+              fontSize: height / 65,
+              marginLeft: 5,
+            }}
+          >
+            {props.mode}
+          </Text>
+        </View>
+        <View style={styles.status}>
+          <Badge status={setStatusIndicator(props.status)} />
+          <Text
+            style={{
+              fontFamily: "light",
+              fontSize: height / 65,
+              marginLeft: 5,
+            }}
+          >
             {props.status}
           </Text>
         </View>
       </View>
-      <View style={styles.imageContainer}>
+      {/* <View style={styles.imageContainer}>
         <Avatar
           size={60}
           rounded
-          title="H"
+          title={props.eventName[0]}
           containerStyle={{ backgroundColor: "purple" }}
         />
-      </View>
+      </View> */}
       <Pressable style={styles.button}>
         <Text
           style={{
@@ -92,9 +125,9 @@ const useStyles = () => {
   const styles = StyleSheet.create({
     eventItemStyle: {
       backgroundColor: "white",
-      height: 400,
+      height: 200,
       flexDirection: "row",
-      height: height / 3,
+      // height: height / 3,
       // backgroundColor:'red',
       marginVertical: 5,
     },

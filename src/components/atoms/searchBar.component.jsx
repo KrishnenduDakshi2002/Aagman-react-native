@@ -21,7 +21,7 @@ const SearchBarComponent = (props) => {
   return (
     <View style={styles.container}>
       <SearchBar
-        placeholder="Search events"
+        placeholder={props.placeholder}
         lightTheme
         round
         showCancel
@@ -37,7 +37,7 @@ const SearchBarComponent = (props) => {
       <Pressable
         style={styles.filter}
         onPress={() => {
-          props.navigation.navigate("FilterScreen",{value: 12011});
+          props.navigation.navigate(props.filterScreenName);
         }}
       >
         <FontAwesome name="filter" size={25} color="black" />
