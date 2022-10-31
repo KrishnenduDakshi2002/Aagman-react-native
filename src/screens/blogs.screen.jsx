@@ -16,7 +16,7 @@ import BlogTileComponent from "../components/atoms/blogs.component";
 
 import { _fonts_ } from "../styles/fonts";
 
-import { Ionicons, Feather } from "@expo/vector-icons";
+import { Ionicons, Feather, MaterialIcons } from "@expo/vector-icons";
 
 import { BLOG_DATA } from "../data/blog.data";
 import { _colors_ } from "../styles/colors";
@@ -94,6 +94,9 @@ const BlogScreen = ({ navigation }) => {
         renderItem={renderItemFunction}
         style={{ backgroundColor: _colors_.light_mode_screen_background_color }}
       />
+      <Pressable style={styles.create_query_btn}>
+        <MaterialIcons name="edit" size={40} color="#5C281D" />
+      </Pressable>
     </SafeAreaView>
   );
 };
@@ -110,6 +113,18 @@ const useStyles = () => {
     header: {
       // backgroundColor:'red',
       width: width,
+    },
+    create_query_btn: {
+      position: "absolute",
+      bottom: 30,
+      right: 30,
+      flexDirection: "row",
+      backgroundColor: _colors_.light_brick,
+      width: 75,
+      height: 75,
+      borderRadius: 50,
+      justifyContent: "center",
+      alignItems: "center",
     },
   });
   return { styles, width, height };

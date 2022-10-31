@@ -1,22 +1,60 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   StyleSheet,
   Text,
   View,
   useWindowDimensions,
   Pressable,
+  SafeAreaView,
 } from "react-native";
 
 import SearchBarComponent from "../components/atoms/searchBar.component";
 
-import { Ionicons, Feather } from "react-native-vector-icons";
-import QueryTileComponetn from "../components/atoms/queries.component";
+import { MaterialIcons, Feather } from "react-native-vector-icons";
+import QueryTileComponent from "../components/atoms/queries.component";
+import { FlatList } from "react-native-gesture-handler";
+import { QUERY_DATA } from "../data/queries.data";
+import { _colors_ } from "../styles/colors";
 
 const DiscussionScreen = ({ navigation }) => {
   const { styles, width, height } = useStyles();
   const [searchText, setSearchText] = useState("");
+  const [Queries, setQueries] = useState(QUERY_DATA);
+
+  const filteredQuery = useMemo(() => {
+    return Queries.filter((query) => {
+      return query.question.toLowerCase().includes(searchText.toLowerCase());
+    });
+  }, [searchText, Queries]);
+
+
+  // https://stackoverflow.com/a/67862414/16896561
+  /// for navigating with params through flatlist component
+  const NavigateWithParams = (query)=>{
+    navigation.navigate('QueryScreen',{query});
+  }
+
+  const renderItemFunction = ({ item }) => {
+    return (
+      <QueryTileComponent
+        // passing NavigateWithParams function to component
+        NavigateWithParams = {NavigateWithParams}
+        question={item.question}
+        description={item.description}
+        author={item.author}
+        postDate={item.postDate}
+        likes={item.likes}
+        tags={item.tags}
+        answers={item.answers}
+
+        // passing the whole question
+        query = {item}
+      />
+    );
+  };
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <View
           style={{
@@ -36,13 +74,6 @@ const DiscussionScreen = ({ navigation }) => {
           >
             Queries
           </Text>
-          <Pressable
-            style={({ pressed }) => [
-              { position: "absolute", right: 30, opacity: pressed ? 0.5 : 1 },
-            ]}
-          >
-            <Feather name="download" size={28} color="black" />
-          </Pressable>
         </View>
         <SearchBarComponent
           placeholder={"Search query"}
@@ -52,10 +83,19 @@ const DiscussionScreen = ({ navigation }) => {
           filterScreenName={"FilterScreen"}
         />
       </View>
-    
-    <QueryTileComponetn/>
 
-    </View>
+      <FlatList
+        data={filteredQuery}
+        style={{ backgroundColor: _colors_.light_mode_screen_background_color }}
+        showsVerticalScrollIndicator={false}
+        renderItem={renderItemFunction}
+      />
+      <Pressable style={styles.create_query_btn}
+      onPress = {()=> {}}
+      >
+        <MaterialIcons name="edit" size={40} color="#5C281D" />
+      </Pressable>
+    </SafeAreaView>
   );
 };
 
@@ -66,11 +106,23 @@ const useStyles = () => {
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor:'white'
+      backgroundColor: "white",
     },
     header: {
       // backgroundColor:'red',
       width: width,
+    },
+    create_query_btn: {
+      position: "absolute",
+      bottom: 30,
+      right: 30,
+      flexDirection: "row",
+      backgroundColor: _colors_.light_brick,
+      width: 75,
+      height: 75,
+      borderRadius: 50,
+      justifyContent: "center",
+      alignItems: "center",
     },
   });
   return { styles, width, height };

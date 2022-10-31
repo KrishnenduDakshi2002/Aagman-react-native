@@ -10,6 +10,7 @@ import Example from "./components/atoms/dateTime";
 import HomeTabNavigator from "./navigator/homeTabNavigator";
 import FilterComponent from "./screens/searchFilter.screen";
 import { SearchFilterContextProvider } from "./contexts/filterContext";
+import QueryScreen from "./screens/query.screen";
 
 // contexts
 
@@ -24,6 +25,7 @@ export default function App() {
         <Stack.Navigator screenOptions={{ header: () => null }}>
           <Stack.Screen name="HomeTab" component={HomeTabNavigator} />
           <Stack.Screen name="FilterScreen" component={FilterComponent} />
+          <Stack.Screen name="QueryScreen" component={QueryScreen} />
           <Stack.Screen name="DateTimePicker" component={Example} />
         </Stack.Navigator>
       </SearchFilterContextProvider>
