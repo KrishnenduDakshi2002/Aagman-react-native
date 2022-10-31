@@ -52,15 +52,15 @@ The community member can post a hackthon through the "Host Event" section </p>
 <h3 align="center"></h3>
 
 <h3 align="left">Languages and Tools:</h3>
-<p align="left"> <a href="https://expressjs.com" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/express/express-original-wordmark.svg" alt="express" width="40" height="40"/> </a> <a href="https://www.figma.com/" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/figma/figma-icon.svg" alt="figma" width="40" height="40"/> </a> <a href="https://firebase.google.com/" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/firebase/firebase-icon.svg" alt="firebase" width="40" height="40"/> </a> <a href="https://www.mongodb.com/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mongodb/mongodb-original-wordmark.svg" alt="mongodb" width="40" height="40"/> </a> <a href="https://nodejs.org" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original-wordmark.svg" alt="nodejs" width="40" height="40"/> </a> <a href="https://reactnative.dev/" target="_blank" rel="noreferrer"> <img src="https://reactnative.dev/img/header_logo.svg" alt="reactnative" width="40" height="40"/> </a> </p>
+<p align="left"> <a href="https://expressjs.com" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/express/express-original-wordmark.svg" alt="express" width="40" height="40"/> </a> <a href="https://firebase.google.com/" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/firebase/firebase-icon.svg" alt="firebase" width="40" height="40"/> </a> <a href="https://www.mongodb.com/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mongodb/mongodb-original-wordmark.svg" alt="mongodb" width="40" height="40"/> </a> <a href="https://nodejs.org" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original-wordmark.svg" alt="nodejs" width="40" height="40"/> </a> <a href="https://reactnative.dev/" target="_blank" rel="noreferrer"> <img src="https://reactnative.dev/img/header_logo.svg" alt="reactnative" width="40" height="40"/> </a> </p>
 
 <br>
 
 <div align = "left">
    <h2>Prequesits </h2>
-   <h3>1. You need everything needed for a regular ReactNative App, so NodeJS and a JAVA SDK. Try with the most basic ReactNative Example to make sure your enviroment is working </h3>
+   <h3>1. You need everything needed for a regular ReactNative App, make sure you have latest NodeJs installed, if using Android Studio or IOS Simulator make follow this link to setup your environment <a href="https://reactnative.dev/docs/environment-setup">Setting up the development environment</a>. We recommend using Expo go.</h3>
    <br>
-   <h3>2. We are using Visual Studio Code with Expo Go  </h3>
+   <h3>2. We are using Visual Studio Code with Expo Go[available on both play store and App store]  </h3>
 
 </div>
 
@@ -76,7 +76,7 @@ git clone https://github.com/KrishnenduDakshi2002/HackOctober-22-Prototype
 ### Step Two
 
 ```
- npm install
+ cd HackOctober-22-Prototype && npm install
 
 ```
 <br>
