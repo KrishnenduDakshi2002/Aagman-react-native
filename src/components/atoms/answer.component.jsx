@@ -39,9 +39,8 @@ const useStyles = ()=>{
     const {width,height} = useWindowDimensions();
     const styles = StyleSheet.create({
         container:{
-            // height: 100,
             width: '100%',
-            backgroundColor:'white',
+            backgroundColor:'#E2FDFD',
             justifyContent:"center",
             alignItems:"center",
             marginTop: 10,

@@ -119,6 +119,7 @@ const QueryScreen = ({ navigation, route }) => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
+        // style={{backgroundColor:'white'}}
         showsVerticalScrollIndicator={false}
         data={query.answers}
         renderItem={AnswerRenderFunction}
@@ -136,6 +137,7 @@ const useStyles = () => {
       justifyContent: "center",
       alignItems: "center",
       marginHorizontal: 10,
+      backgroundColor:'white'
     },
     tags: {
       backgroundColor: "#CADFF5",

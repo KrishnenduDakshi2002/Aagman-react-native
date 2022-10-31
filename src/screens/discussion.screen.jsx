@@ -15,11 +15,16 @@ import QueryTileComponent from "../components/atoms/queries.component";
 import { FlatList } from "react-native-gesture-handler";
 import { QUERY_DATA } from "../data/queries.data";
 import { _colors_ } from "../styles/colors";
+import { usePostQueryDispatch, usePostQueryState } from "../contexts/PostQueryContext";
 
 const DiscussionScreen = ({ navigation }) => {
   const { styles, width, height } = useStyles();
   const [searchText, setSearchText] = useState("");
-  const [Queries, setQueries] = useState(QUERY_DATA);
+  const [Queries, setQueries] = useState(QUERY_DATA); 
+
+  const QueryState = usePostQueryState();
+  const QueryDispatch = usePostQueryDispatch();
+
 
   const filteredQuery = useMemo(() => {
     return Queries.filter((query) => {
@@ -91,7 +96,7 @@ const DiscussionScreen = ({ navigation }) => {
         renderItem={renderItemFunction}
       />
       <Pressable style={styles.create_query_btn}
-      onPress = {()=> {}}
+      onPress = {()=> navigation.navigate('PostQueryScreen')}
       >
         <MaterialIcons name="edit" size={40} color="#5C281D" />
       </Pressable>

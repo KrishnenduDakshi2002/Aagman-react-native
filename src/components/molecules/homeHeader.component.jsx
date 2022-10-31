@@ -28,7 +28,7 @@ const HomeHeaderComponent = (props) => {
 
   return (
     <View style={styles.container}>
-      <Text style={{ fontFamily: "bold", fontSize: height/40 }}> App name</Text>
+      <Text style={{ fontFamily: "bold", fontSize: height/35 }}> Aagman</Text>
       <View style={styles.notification_host_event}>
         <View style={styles.notification}>
           <Ionicons name="notifications" size={25} color="black" />
@@ -39,6 +39,8 @@ const HomeHeaderComponent = (props) => {
             styles.createEventBtn,
             { opacity: pressed ? 0.5 : 1 },
           ]}
+
+          onPress = {()=>props.setDialogVisibility(true)}
         >
           <Text style={{fontFamily: 'bold' ,fontSize: height/60}}>Host event</Text>
         </Pressable>
