@@ -5,18 +5,20 @@ export const QUERY_INITIAL_STATE = {
     author : "User#6222",
     postDate :"",
     likes :"0",
-    tags :["javascript"],
+    tags :[],
     answers :[]
 };
 
 export const POST_QUERY_ACTION_TYPE ={
+    ID: "ID",
     QUESTION : "QUESTION",
     DESCRIPTION : "DESCRIPTION",
     TAG : "TAG",
     POSTDATE : "POSTDATE",
     LIKES : "LIKES",
     ANSWER : "ANSWER",
-    CLEAR : "CLEAR"
+    CLEAR : "CLEAR",
+    CLEAR_TAG : "CLEAR_TAG"
 
 }
 
@@ -26,6 +28,11 @@ export const PostQueryReducer = (state,action)=>{
             return {
                 ...state,
                 question : action.payload
+            }
+        case POST_QUERY_ACTION_TYPE.ID:
+            return {
+                ...state,
+                id : action.payload
             }
         case POST_QUERY_ACTION_TYPE.DESCRIPTION:
             return {
@@ -53,16 +60,12 @@ export const PostQueryReducer = (state,action)=>{
                 answers : [...state.answers,action.payload]
             }
         case POST_QUERY_ACTION_TYPE.CLEAR:
-            return {
+            return QUERY_INITIAL_STATE;
+        case POST_QUERY_ACTION_TYPE.CLEAR_TAG:
+            return{
                 ...state,
-                question : "",
-                description :"",
-                postDate:"",
-                likes:"",
-                tags :[],
-                answers :[]
+                tags : state.tags.filter(val => val !== action.payload)
             }
-
         default : 
             return state;
     }

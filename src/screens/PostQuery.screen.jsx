@@ -8,10 +8,12 @@ import {
   TextInput,
   FlatList,
   Pressable,
+  Alert,
 } from "react-native";
 import {
   usePostQueryState,
   usePostQueryDispatch,
+  useOnPressedPostQuestion,
 } from "../contexts/PostQueryContext";
 
 import { Entypo } from "@expo/vector-icons";
@@ -23,16 +25,22 @@ import { _fonts_ } from "../styles/fonts";
 import { POST_QUERY_ACTION_TYPE } from "../utils/PostQuery.Reducer";
 import InputComponent from "../components/atoms/Input.component";
 
-const Header = () => {
+const Header = (props) => {
   const { styles, width, height } = useStyles();
+  const [tag, setTag] = useState("");
   const QueryState = usePostQueryState();
   const QueryDispatch = usePostQueryDispatch();
+
+
+  const postQuestionState = useOnPressedPostQuestion();  // state for post Question button 
+  // from context
+
   return (
     <View
       style={{
         // backgroundColor: "pink",
         width: width,
-        height: 350,
+        marginBottom: 30,
         marginTop: 50,
         paddingHorizontal: 15,
       }}
@@ -62,39 +70,84 @@ const Header = () => {
         }
         placeholder={"Enter description"}
       />
-    <View style={{flexDirection:'row'}}>
-
-      <InputComponent
-        style={styles.tag}
-        value={QueryState.author}
-        onChangeTextFunction={(text) =>
-          QueryDispatch({
-            type: POST_QUERY_ACTION_TYPE.QUESTION,
-            payload: text,
-          })
-        }
-        placeholder={"Enter tags"}
-      />
+      <View
+        style={{
+          flexDirection: "row",
+        }}
+      >
+        <InputComponent
+          style={styles.tag}
+          value={tag}
+          onChangeTextFunction={setTag}
+          placeholder={"Enter tags"}
+        />
+        <Button
+          radius={10}
+          title={"Add tag"}
+          onPress={() => {
+            if(tag !== ""){
+                QueryDispatch({
+                  type: POST_QUERY_ACTION_TYPE.TAG,
+                  payload: tag,
+                });
+            }
+            setTag("");
+          }}
+        />
+      </View>
       <Button
-      radius={10}
-      title={'Add tag'}
+        radius={10}
+        title={"Post question"}
+        buttonStyle={{
+          backgroundColor: "rgba(111, 202, 186, 1)",
+          paddingHorizontal: 30,
+          paddingVertical: 15,
+        }}
+        onPress = {()=>{
+            if(QueryState.question !== "" && QueryState.description !== ""){
+                // giving an unique id to the question
+                QueryDispatch({type : POST_QUERY_ACTION_TYPE.ID,payload : Math.floor(Math.random() * 199929231).toString()})
+                // adding post date to the question
+                QueryDispatch({type: POST_QUERY_ACTION_TYPE.POSTDATE, payload : Date.now})
+                // setting this button (to pressed [true])
+                postQuestionState.setState(!postQuestionState.state);
+
+                // then navigate to discussion screen
+                props.navigationFunction();
+            }else{
+                Alert.alert('Please enter value');
+            }
+        }}
       />
-    </View>
     </View>
   );
 };
 
-const PostQueryScreen = () => {
+const PostQueryScreen = ({navigation}) => {
   const { styles, width, height } = useStyles();
 
   const QueryState = usePostQueryState();
   const QueryDispatch = usePostQueryDispatch();
 
+
+  const navigationFuntion = ()=>{
+    navigation.navigate('DisscussionScreen')
+  }
+
   const RenderTags = ({ item }) => {
     return (
       <View style={styles.tags}>
         <Text style={{ color: "#000D8C" }}>{item}</Text>
-        <Entypo name="cross" size={24} color="#000D8C" style={{marginLeft: 30}} />
+        <Pressable
+        onPress={()=>QueryDispatch({type: POST_QUERY_ACTION_TYPE.CLEAR_TAG, payload: item})}
+        >
+          <Entypo
+            name="cross"
+            size={24}
+            color="#000D8C"
+            style={{ marginLeft: 30 }}
+          />
+        </Pressable>
       </View>
     );
   };
@@ -104,8 +157,8 @@ const PostQueryScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        contentContainerStyle={{ alignItems: "center" }}
-        ListHeaderComponent={Header}
+        contentContainerStyle={{ alignItems: "center", }}
+        ListHeaderComponent={<Header navigationFunction = {navigationFuntion}/>}
         data={QueryState.tags}
         showsVerticalScrollIndicator={false}
         renderItem={RenderTags}
@@ -126,11 +179,12 @@ const useStyles = () => {
     tags: {
       flexDirection: "row",
       justifyContent: "space-around",
-    //   width: width / 2,
+      //   width: width / 2,
       backgroundColor: "#CADFF5",
       height: 50,
       marginRight: 10,
       borderRadius: 5,
+      marginBottom: 10,
       paddingHorizontal: 10,
       alignItems: "center",
     },
@@ -145,6 +199,7 @@ const useStyles = () => {
       marginBottom: 30,
     },
     tag: {
+      flex: 1,
       flexDirection: "row",
       height: 50,
       borderWidth: 1,
@@ -153,6 +208,7 @@ const useStyles = () => {
       paddingLeft: 15,
       alignItems: "center",
       marginBottom: 30,
+      marginRight: 15,
     },
   });
   return { styles, width, height };

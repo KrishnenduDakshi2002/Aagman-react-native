@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo,useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -15,7 +15,8 @@ import QueryTileComponent from "../components/atoms/queries.component";
 import { FlatList } from "react-native-gesture-handler";
 import { QUERY_DATA } from "../data/queries.data";
 import { _colors_ } from "../styles/colors";
-import { usePostQueryDispatch, usePostQueryState } from "../contexts/PostQueryContext";
+import { useOnPressedPostQuestion, usePostQueryDispatch, usePostQueryState } from "../contexts/PostQueryContext";
+import { POST_QUERY_ACTION_TYPE } from "../utils/PostQuery.Reducer";
 
 const DiscussionScreen = ({ navigation }) => {
   const { styles, width, height } = useStyles();
@@ -24,9 +25,22 @@ const DiscussionScreen = ({ navigation }) => {
 
   const QueryState = usePostQueryState();
   const QueryDispatch = usePostQueryDispatch();
+  
+  const postQuestionState = useOnPressedPostQuestion();  // state for post Question button 
+  // from context
 
+  useEffect(() => {
+    // console.log('Running useeffect [disscussion]');
+    if(postQuestionState.state){
+      setQueries([...Queries,QueryState]);  // adding new questions to list (when use added new question from postQuery screen)
+      QueryDispatch({type : POST_QUERY_ACTION_TYPE.CLEAR}) // clearing the previous state for postQuery reducer
+      postQuestionState.setState(!postQuestionState.state);  // making state of post question button [in postQuery screen] to false 
+    }
+  }, [postQuestionState.state])
+  
 
   const filteredQuery = useMemo(() => {
+    // console.log('Running useMemo [disscussion]');
     return Queries.filter((query) => {
       return query.question.toLowerCase().includes(searchText.toLowerCase());
     });
