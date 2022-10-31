@@ -19,8 +19,11 @@ import EventCalenderComponent from "../components/molecules/eventCalendar.compon
 import { _fonts_ } from "../styles/fonts";
 import { _colors_ } from "../styles/colors";
 import DiscussionScreen from "../screens/discussion.screen";
+
+
 import BlogScreen from "../screens/blogs.screen";
 import SearchScreen from "../screens/search.screen";
+import SimilarInterestScreen from "../screens/similar.interest";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -77,8 +80,8 @@ const HomeTabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="SearchScreen"
-        component={SearchScreen}
+        name="SimilarInterestScreen"
+        component={SimilarInterestScreen}
         options={{
           tabBarLabel: "",
           tabBarIcon: ({ color }) => (

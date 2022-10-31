@@ -27,6 +27,7 @@ export default function App() {
           <Stack.Screen name="FilterScreen" component={FilterComponent} />
           <Stack.Screen name="QueryScreen" component={QueryScreen} />
           <Stack.Screen name="DateTimePicker" component={Example} />
+          
         </Stack.Navigator>
       </SearchFilterContextProvider>
     </NavigationContainer>
