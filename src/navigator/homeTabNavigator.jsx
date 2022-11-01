@@ -35,8 +35,8 @@ const HomeTabNavigator = () => {
   return (
     <Tab.Navigator
       labeled={false}
-      activeColor="#f0edf6"
-      inactiveColor="#3e2465"
+      activeColor={_colors_.light_skyBlue}
+      inactiveColor="black"
       barStyle={{ backgroundColor: _colors_.dark_blue }}
     >
       <Tab.Screen
@@ -45,7 +45,7 @@ const HomeTabNavigator = () => {
         options={{
           tabBarLabel: "",
           tabBarIcon: ({ color }) => (
-            <FontAwesome5 name="home" size={24} color="black" />
+            <FontAwesome5 name="home" size={24} color={color} />
           ),
         }}
       />
@@ -55,7 +55,7 @@ const HomeTabNavigator = () => {
         options={{
           tabBarLabel: "",
           tabBarIcon: ({ color }) => (
-            <FontAwesome name="calendar-check-o" size={24} color="black" />
+            <FontAwesome name="calendar-check-o" size={24} color={color}/>
           ),
         }}
       />
@@ -63,9 +63,10 @@ const HomeTabNavigator = () => {
         name="DisscussionScreen"
         component={DiscussionScreen}
         options={{
+          // tabBarColor: '#6518F3',
           tabBarLabel: "",
           tabBarIcon: ({ color }) => (
-            <Octicons name="comment-discussion" size={24} color="black" />
+            <Octicons name="comment-discussion" size={24} color={color} />
           ),
         }}
       />
@@ -75,8 +76,9 @@ const HomeTabNavigator = () => {
         options={{
           tabBarLabel: "",
           tabBarIcon: ({ color }) => (
-            <FontAwesome5 name="paper-plane" size={24} color="black" />
+            <FontAwesome5 name="paper-plane" size={24} color={color} />
           ),
+          // tabBarColor: '#016D6A'
         }}
       />
       <Tab.Screen
@@ -85,7 +87,7 @@ const HomeTabNavigator = () => {
         options={{
           tabBarLabel: "",
           tabBarIcon: ({ color }) => (
-            <AntDesign name="search1" size={24} color="black" />
+            <AntDesign name="search1" size={24} color={color} />
           ),
         }}
       />
