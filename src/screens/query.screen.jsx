@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useReducer, useState,useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   FlatList,
   Pressable,
+  Alert,
 } from "react-native";
 
 import dayjs from "dayjs";
@@ -22,6 +23,11 @@ import { useFonts } from "expo-font";
 import { _fonts_ } from "../styles/fonts";
 import { _colors_ } from "../styles/colors";
 import AnswerComponent from "../components/atoms/answer.component";
+import { TextInput } from "react-native-gesture-handler";
+import InputComponent from "../components/atoms/Input.component";
+
+import { PostAnswerReducer, POST_ANSWER_INITIAL_STATE ,POSTANSWER_ACTION_TYPES} from "../utils/postAnswer.Reducer";
+import { usePostAnswerContext } from "../contexts/discussionContext";
 
 const AnswerRenderFunction = ({ item }) => {
   return <AnswerComponent
@@ -31,9 +37,55 @@ const AnswerRenderFunction = ({ item }) => {
   />;
 };
 
+const Footer = (props)=>{
+  const PostAnswerContext = usePostAnswerContext();
+  const {styles} = useStyles();
+  return (
+    <View
+    
+    style={{marginVertical: 30}}
+    >
+      <Divider color={_colors_.dark_grey} />
+      <InputComponent
+      multiline
+      style={styles.answer}
+      value={PostAnswerContext.state.answer}
+      onChangeTextFunction={(text)=> PostAnswerContext.setState({type: POSTANSWER_ACTION_TYPES.ANSWER,payload: text})}
+      placeholder={"Enter answer"}
+    />
+      <Button
+      title={'Your answer'}
+      radius= {10}
+      titleStyle = {{fontFamily: 'regular'}}
+      containerStyle ={{marginBottom: 15}}
+      onPress = {()=>{
+        if( PostAnswerContext.state.answer!== ""){
+          PostAnswerContext.setState({type : POSTANSWER_ACTION_TYPES.DATE, payload: Date.now()})
+          props.setPostAnswerPressed(true);
+
+        }else Alert.alert('please enter valid answer')
+      }}
+      />
+    </View>
+  )
+}
+
 const QueryScreen = ({ navigation, route }) => {
   const { styles, width, height } = useStyles();
-  const [query, setQuery] = useState(route.params.query);
+  const [query, setQuery] = useState(route.params.query);  // holding the total state of this screen
+  const [isPostAnswerPressed, setIsPostAnswerPressed] = useState(false);  // holding state of your answer button
+  const [PostAnswerState,PostAnswerDispatch] = useReducer(PostAnswerReducer,POST_ANSWER_INITIAL_STATE)  // holding state for answer
+
+  const PostAnswerContext = usePostAnswerContext();
+  
+  useEffect(() => {
+    if(isPostAnswerPressed){
+      setQuery({...query, answers : [...query.answers, PostAnswerContext.state]})
+      PostAnswerContext.setState({type: POSTANSWER_ACTION_TYPES.CLEAR})
+      setIsPostAnswerPressed(false);
+    }
+  }, [isPostAnswerPressed])
+  
 
   const [fontsLoaded] = useFonts(_fonts_);
 
@@ -46,6 +98,7 @@ const QueryScreen = ({ navigation, route }) => {
   };
 
   const Header = () => {
+
     return (
       <View style={{backgroundColor:"white"}}>
         <Text
@@ -95,12 +148,6 @@ const QueryScreen = ({ navigation, route }) => {
         >
           Posted by {query.author}
         </Text>
-        <Button
-        title={'Your answer'}
-        radius= {10}
-        titleStyle = {{fontFamily: 'regular'}}
-        containerStyle ={{marginBottom: 15}}
-        />
         <Divider color={_colors_.dark_grey} />
 
         <Text
@@ -114,6 +161,7 @@ const QueryScreen = ({ navigation, route }) => {
     );
   };
 
+
   if (!fontsLoaded) return null;
 
   return (
@@ -124,6 +172,7 @@ const QueryScreen = ({ navigation, route }) => {
         data={query.answers}
         renderItem={AnswerRenderFunction}
         ListHeaderComponent={Header}
+        ListFooterComponent ={<Footer setPostAnswerPressed ={(val)=> setIsPostAnswerPressed(val)}/>}
       />
     </SafeAreaView>
   );
@@ -147,6 +196,17 @@ const useStyles = () => {
       paddingHorizontal: 10,
       justifyContent: "center",
       alignItems: "center",
+    },
+    answer: {
+      flexDirection: "row",
+      height: 150,
+      borderWidth: 1,
+      borderRadius: 15,
+      borderColor: "black",
+      paddingLeft: 15,
+      alignItems: "center",
+      marginBottom: 30,
+      marginTop: 30,
     },
   });
   return { styles, width, height };

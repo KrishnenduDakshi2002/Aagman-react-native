@@ -15,7 +15,7 @@ import QueryTileComponent from "../components/atoms/queries.component";
 import { FlatList } from "react-native-gesture-handler";
 import { QUERY_DATA } from "../data/queries.data";
 import { _colors_ } from "../styles/colors";
-import { useOnPressedPostQuestion, usePostQueryDispatch, usePostQueryState } from "../contexts/PostQueryContext";
+import { useOnPressedPostQuestion, usePostQueryDispatch, usePostQueryState } from "../contexts/discussionContext";
 import { POST_QUERY_ACTION_TYPE } from "../utils/PostQuery.Reducer";
 
 const DiscussionScreen = ({ navigation }) => {

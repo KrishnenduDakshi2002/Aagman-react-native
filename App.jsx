@@ -13,7 +13,7 @@ import { SearchFilterContextProvider } from "./src/contexts/filterContext";
 import QueryScreen from "./src/screens/query.screen";
 import People from "./src/screens/people";
 import PostQueryScreen from "./src/screens/PostQuery.screen";
-import { PostQueryContextProvider } from "./src/contexts/PostQueryContext";
+import { PostQueryContextProvider } from "./src/contexts/discussionContext";
 
 // contexts
 

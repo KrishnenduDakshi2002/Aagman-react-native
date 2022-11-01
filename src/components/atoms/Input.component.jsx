@@ -17,18 +17,21 @@ const InputComponent = ({value,onChangeTextFunction,style,multiline=false,placeh
         style={style}
       >
         <TextInput
-          style={{ flex: 1 }}
+          style={{height: style.height,width: '100%'}}
           multiline = {multiline}
           placeholder={placeholder}
           value={value}
           onChangeText = {(text)=> onChangeTextFunction(text)}
         />
-        <Pressable
-          style={{ marginHorizontal: 10 }}
-          onPress = {()=> onChangeTextFunction("")}
-        >
-          <Entypo name="circle-with-cross" size={24} color="black" />
-        </Pressable>
+        {
+          (value !== "") ? (<Pressable
+            style={{ marginHorizontal: 10 }}
+            onPress = {()=> onChangeTextFunction("")}
+          >
+            <Entypo name="circle-with-cross" size={24} color="black" />
+          </Pressable>) : null
+        }
+        
       </View>
 )
 }

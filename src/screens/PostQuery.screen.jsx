@@ -14,7 +14,7 @@ import {
   usePostQueryState,
   usePostQueryDispatch,
   useOnPressedPostQuestion,
-} from "../contexts/PostQueryContext";
+} from "../contexts/discussionContext";
 
 import { Entypo } from "@expo/vector-icons";
 
