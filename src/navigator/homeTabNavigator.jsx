@@ -24,6 +24,7 @@ import DiscussionScreen from "../screens/discussion.screen";
 import BlogScreen from "../screens/blogs.screen";
 import SearchScreen from "../screens/search.screen";
 import SimilarInterestScreen from "../screens/similar.interest";
+import CollaborateScreen from "../screens/collaborate.screen";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -84,6 +85,16 @@ const HomeTabNavigator = () => {
       <Tab.Screen
         name="SimilarInterestScreen"
         component={SimilarInterestScreen}
+        options={{
+          tabBarLabel: "",
+          tabBarIcon: ({ color }) => (
+            <AntDesign name="search1" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Collaborate"
+        component={CollaborateScreen}
         options={{
           tabBarLabel: "",
           tabBarIcon: ({ color }) => (

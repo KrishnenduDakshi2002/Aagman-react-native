@@ -14,6 +14,8 @@ import QueryScreen from "./src/screens/query.screen";
 import People from "./src/screens/people";
 import PostQueryScreen from "./src/screens/PostQuery.screen";
 import { PostQueryContextProvider } from "./src/contexts/discussionContext";
+import CollaborateScreen from "./src/screens/collaborate.screen";
+import CollaborateDetailsScreen from "./src/screens/collaborateDetails.screen";
 
 // contexts
 
@@ -33,6 +35,8 @@ export default function App() {
             <Stack.Screen name="DateTimePicker" component={Example} />
             <Stack.Screen name="PeopleScreen" component={People} />
             <Stack.Screen name="PostQueryScreen" component={PostQueryScreen} />
+            <Stack.Screen name="colleborateScreen" component={CollaborateScreen}/>
+            <Stack.Screen name="colleborateDetailsScreee" component={CollaborateDetailsScreen}/>
             
           </Stack.Navigator>
         </PostQueryContextProvider>
