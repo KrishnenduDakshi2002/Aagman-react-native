@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import {
   StyleSheet,
   Text,
@@ -16,6 +19,8 @@ import {
   useOnPressedPostQuestion,
 } from "../contexts/discussionContext";
 
+import { HOST } from "../config";
+
 import { Entypo } from "@expo/vector-icons";
 
 import { Button, Input } from "@rneui/themed";
@@ -31,9 +36,34 @@ const Header = (props) => {
   const QueryState = usePostQueryState();
   const QueryDispatch = usePostQueryDispatch();
 
-
-  const postQuestionState = useOnPressedPostQuestion();  // state for post Question button 
+  const postQuestionState = useOnPressedPostQuestion(); // state for post Question button
   // from context
+
+  //posting question
+  const PostDataFunction = async () => {
+    const token = await AsyncStorage.getItem("authToken");
+    const { id, author, ...question } = QueryState; // by this kinda excluding id and author
+    fetch(`${HOST}/api/v1/discussion/question/post`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(question),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.statusCode === 201) {
+
+          // setting this button (to pressed [true])
+          postQuestionState.setState(!postQuestionState.state);
+          // then navigate to discussion screen
+          props.navigationFunction();
+        }
+      });
+  };
 
   return (
     <View
@@ -85,11 +115,11 @@ const Header = (props) => {
           radius={10}
           title={"Add tag"}
           onPress={() => {
-            if(tag !== ""){
-                QueryDispatch({
-                  type: POST_QUERY_ACTION_TYPE.TAG,
-                  payload: tag,
-                });
+            if (tag !== "") {
+              QueryDispatch({
+                type: POST_QUERY_ACTION_TYPE.TAG,
+                payload: tag,
+              });
             }
             setTag("");
           }}
@@ -103,43 +133,51 @@ const Header = (props) => {
           paddingHorizontal: 30,
           paddingVertical: 15,
         }}
-        onPress = {()=>{
-            if(QueryState.question !== "" && QueryState.description !== ""){
-                // giving an unique id to the question
-                QueryDispatch({type : POST_QUERY_ACTION_TYPE.ID,payload : Math.floor(Math.random() * 199929231).toString()})
-                // adding post date to the question
-                QueryDispatch({type: POST_QUERY_ACTION_TYPE.POSTDATE, payload : Date.now})
-                // setting this button (to pressed [true])
-                postQuestionState.setState(!postQuestionState.state);
+        onPress={() => {
+          if (QueryState.question !== "" && QueryState.description !== "") {
+            // giving an unique id to the question
+            QueryDispatch({
+              type: POST_QUERY_ACTION_TYPE.ID,
+              payload: Math.floor(Math.random() * 199929231).toString(),
+            });
+            // adding post date to the question
+            QueryDispatch({
+              type: POST_QUERY_ACTION_TYPE.POSTDATE,
+              payload: Date.now,
+            });
 
-                // then navigate to discussion screen
-                props.navigationFunction();
-            }else{
-                Alert.alert('Please enter value');
-            }
+            //posting the question
+            PostDataFunction();
+          } else {
+            Alert.alert("Please enter value");
+          }
         }}
       />
     </View>
   );
 };
 
-const PostQueryScreen = ({navigation}) => {
+const PostQueryScreen = ({ navigation }) => {
   const { styles, width, height } = useStyles();
 
   const QueryState = usePostQueryState();
   const QueryDispatch = usePostQueryDispatch();
 
-
-  const navigationFuntion = ()=>{
-    navigation.navigate('DisscussionScreen')
-  }
+  const navigationFuntion = () => {
+    navigation.navigate("DisscussionScreen");
+  };
 
   const RenderTags = ({ item }) => {
     return (
       <View style={styles.tags}>
         <Text style={{ color: "#000D8C" }}>{item}</Text>
         <Pressable
-        onPress={()=>QueryDispatch({type: POST_QUERY_ACTION_TYPE.CLEAR_TAG, payload: item})}
+          onPress={() =>
+            QueryDispatch({
+              type: POST_QUERY_ACTION_TYPE.CLEAR_TAG,
+              payload: item,
+            })
+          }
         >
           <Entypo
             name="cross"
@@ -157,8 +195,8 @@ const PostQueryScreen = ({navigation}) => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        contentContainerStyle={{ alignItems: "center", }}
-        ListHeaderComponent={<Header navigationFunction = {navigationFuntion}/>}
+        contentContainerStyle={{ alignItems: "center" }}
+        ListHeaderComponent={<Header navigationFunction={navigationFuntion} />}
         data={QueryState.tags}
         showsVerticalScrollIndicator={false}
         renderItem={RenderTags}

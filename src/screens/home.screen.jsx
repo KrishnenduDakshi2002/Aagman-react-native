@@ -17,7 +17,7 @@ import SearchBarComponent from "../components/atoms/searchBar.component";
 import { useFilterState } from "../contexts/filterContext";
 import HomeEventDialog from "../components/atoms/HomeEventDialog.component";
 
-
+import { HOST } from "../config";
 
 const renderItemFunction = ({ item, index, seperator }) => {
   return (
@@ -44,13 +44,12 @@ const HandleFilters = (state, array) => {
   if (trueEventsKeys.length > 0) {
     return array.filter((event) => {
       const mode = event.mode.toLowerCase();
-      const status = event.status.toLowerCase();
+      // const status = event.status.toLowerCase();
       const type = event.type.toLowerCase();
 
       return (
-        trueEventsKeys.includes(mode) ||
-        trueEventsKeys.includes(type) ||
-        trueEventsKeys.includes(status)
+        trueEventsKeys.includes(mode) || trueEventsKeys.includes(type)
+        // trueEventsKeys.includes(status)
       );
     });
   } else return array;
@@ -59,16 +58,30 @@ const HandleFilters = (state, array) => {
 const HomeScreen = ({ navigation, route }) => {
   const { styles } = useStyles();
   const [searchText, setSearchText] = useState(""); // storing our search query
-  const [events, _] = useState(EventData); // storing the events
+  const [events, setEvents] = useState(null); // storing the events
   const [isDialogVisible, setIsDialogVisible] = useState(false);
 
   const state = useFilterState(); // this is the state from searchFilter screen
-  // and will be used for filtering out evnets
-  // console.log("Printing filter state [homescreen]->",state);
 
-  // handling search
-  let filteredEvents = useMemo(() => {
-    return events.filter((event) => {
+  //handling API response
+  const LoadDataFunction = () => {
+    fetch(`${HOST}/api/v1/event/getAllEvents`)
+      .then((res) => res.json())
+      .then((data) => {
+        setEvents(data);
+      });
+
+    // adding status
+
+  };
+
+  useEffect(() => {
+    LoadDataFunction();
+  }, []);
+
+  let filteredEvents = [];
+  filteredEvents = useMemo(() => {
+    return events?.filter((event) => {
       return event.eventName.toLowerCase().includes(searchText.toLowerCase());
     });
   }, [events, searchText]); // only re-render when events or searchtext changes
@@ -78,7 +91,6 @@ const HomeScreen = ({ navigation, route }) => {
     () => HandleFilters(state, filteredEvents),
     [state, filteredEvents]
   );
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" translucent={false} />
@@ -94,16 +106,26 @@ const HomeScreen = ({ navigation, route }) => {
         filterScreenName={"FilterScreen"}
       />
 
-      <FlatList
-        data={filteredEvents}
-        renderItem={renderItemFunction}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.listContainer}
-      />
+    {
+      (events == null) ?
+      (
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <Text>Loading....</Text>
+        </View>
+      ):(
+        <FlatList
+          refreshControl={true}
+          data={filteredEvents}
+          renderItem={renderItemFunction}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContainer}
+        />
+      )
+    }
 
       <HomeEventDialog
-      isDialogVisible = {isDialogVisible}
-      setVisibitlity = {(value)=> setIsDialogVisible(value)}
+        isDialogVisible={isDialogVisible}
+        setVisibitlity={(value) => setIsDialogVisible(value)}
       />
     </SafeAreaView>
   );

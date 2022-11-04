@@ -28,7 +28,7 @@ const AnswerComponent =(props)=>{
         </View>
         <View style={{flexDirection: "row",justifyContent:'flex-end',width:'100%'}}>
             <Text style={{fontFamily:'regular',fontSize:height/60,color:_colors_.dark_grey}}>{dayjs(props.date).fromNow()}</Text>
-            <Text style={{fontFamily: 'bold',marginLeft:20,color:_colors_.dark_blue,fontSize: height/55}}>{props.author}</Text>
+            <Text style={{fontFamily: 'bold',marginLeft:20,color:_colors_.dark_blue,fontSize: height/55}}>{props.author.userName}</Text>
         </View>
     </View>
 )

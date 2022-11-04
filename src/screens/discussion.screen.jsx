@@ -1,4 +1,4 @@
-import React, { useState, useMemo,useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -15,59 +15,83 @@ import QueryTileComponent from "../components/atoms/queries.component";
 import { FlatList } from "react-native-gesture-handler";
 import { QUERY_DATA } from "../data/queries.data";
 import { _colors_ } from "../styles/colors";
-import { useOnPressedPostQuestion, usePostQueryDispatch, usePostQueryState } from "../contexts/discussionContext";
+import {
+  useOnPressedPostQuestion,
+  usePostQueryDispatch,
+  usePostQueryState,
+} from "../contexts/discussionContext";
 import { POST_QUERY_ACTION_TYPE } from "../utils/PostQuery.Reducer";
+import { HOST } from "../config";
 
 const DiscussionScreen = ({ navigation }) => {
   const { styles, width, height } = useStyles();
   const [searchText, setSearchText] = useState("");
-  const [Queries, setQueries] = useState(QUERY_DATA); 
+  const [Queries, setQueries] = useState(null);
 
   const QueryState = usePostQueryState();
   const QueryDispatch = usePostQueryDispatch();
-  
-  const postQuestionState = useOnPressedPostQuestion();  // state for post Question button 
-  // from context
+
+  const postQuestionState = useOnPressedPostQuestion(); // state for post Question button
+
+  //handling API response
+  const LoadDataFunction = () => {
+    fetch(`${HOST}/api/v1/discussion/question/getAll`)
+      .then((res) => res.json())
+      .then((data) => {
+        setQueries(data);
+      });
+  };
 
   useEffect(() => {
-    // console.log('Running useeffect [disscussion]');
-    if(postQuestionState.state){
-      setQueries([...Queries,QueryState]);  // adding new questions to list (when use added new question from postQuery screen)
-      QueryDispatch({type : POST_QUERY_ACTION_TYPE.CLEAR}) // clearing the previous state for postQuery reducer
-      postQuestionState.setState(!postQuestionState.state);  // making state of post question button [in postQuery screen] to false 
+    // api will be called first time when this screen is rendering
+    // second time when the postQuestion state will be true
+    LoadDataFunction();
+
+    if (postQuestionState.state) {
+      QueryDispatch({ type: POST_QUERY_ACTION_TYPE.CLEAR }); // clearing the previous state for postQuery reducer
+      postQuestionState.setState(!postQuestionState.state); // making state of post question button [in postQuery screen] to false
     }
-  }, [postQuestionState.state])
-  
+  }, [postQuestionState.state]);
+
+  // from context
+
+  // useEffect(() => {
+  //   // console.log('Running useeffect [disscussion]');
+  //   if(postQuestionState.state){
+  //     setQueries([...Queries,QueryState]);  // adding new questions to list (when use added new question from postQuery screen)
+  //     QueryDispatch({type : POST_QUERY_ACTION_TYPE.CLEAR}) // clearing the previous state for postQuery reducer
+  //     postQuestionState.setState(!postQuestionState.state);  // making state of post question button [in postQuery screen] to false
+  //   }
+  // }, [postQuestionState.state])
 
   const filteredQuery = useMemo(() => {
     // console.log('Running useMemo [disscussion]');
-    return Queries.filter((query) => {
+    return Queries?.filter((query) => {
       return query.question.toLowerCase().includes(searchText.toLowerCase());
     });
   }, [searchText, Queries]);
 
-
   // https://stackoverflow.com/a/67862414/16896561
   /// for navigating with params through flatlist component
-  const NavigateWithParams = (query)=>{
-    navigation.navigate('QueryScreen',{query});
-  }
+  const NavigateWithParams = (query) => {
+navigation.navigate("QueryScreen", query);
+  };
 
   const renderItemFunction = ({ item }) => {
     return (
       <QueryTileComponent
+        questionId = {item._id}
         // passing NavigateWithParams function to component
-        NavigateWithParams = {NavigateWithParams}
+        NavigateWithParams={NavigateWithParams}
         question={item.question}
         description={item.description}
-        author={item.author}
-        postDate={item.postDate}
+        author={item.author.userName}
+        postDate={item.createdAt}
         likes={item.likes}
         tags={item.tags}
         answers={item.answers}
-
         // passing the whole question
-        query = {item}
+        // query={item}
       />
     );
   };
@@ -109,8 +133,9 @@ const DiscussionScreen = ({ navigation }) => {
         showsVerticalScrollIndicator={false}
         renderItem={renderItemFunction}
       />
-      <Pressable style={styles.create_query_btn}
-      onPress = {()=> navigation.navigate('PostQueryScreen')}
+      <Pressable
+        style={styles.create_query_btn}
+        onPress={() => navigation.navigate("PostQueryScreen")}
       >
         <MaterialIcons name="edit" size={40} color="#5C281D" />
       </Pressable>

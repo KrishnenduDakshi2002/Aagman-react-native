@@ -10,14 +10,17 @@ TextInput } from 'react-native'
 import { Entypo } from "@expo/vector-icons";
 
 
-const InputComponent = ({value,onChangeTextFunction,style,multiline=false,placeholder})=>{
+const InputComponent = ({value,onChangeTextFunction,style,multiline=false,placeholder,password=false})=>{
     const { styles } = useStyles();
     return(
         <View
         style={style}
       >
         <TextInput
-          style={{height: style.height,width: '100%'}}
+        autoCapitalize="none"
+        autoCorrect = {false}
+          style={{height: style.height,flex: 1}}
+          secureTextEntry = {password}
           multiline = {multiline}
           placeholder={placeholder}
           value={value}

@@ -16,6 +16,7 @@ import PostQueryScreen from "./src/screens/PostQuery.screen";
 import { PostQueryContextProvider } from "./src/contexts/discussionContext";
 import CollaborateScreen from "./src/screens/collaborate.screen";
 import CollaborateDetailsScreen from "./src/screens/collaborateDetails.screen";
+import LoginScreen from "./src/screens/login.screen";
 
 // contexts
 
@@ -23,21 +24,26 @@ const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    
     <NavigationContainer>
       {/* this context provider provides filter state */}
-      <SearchFilterContextProvider> 
+      <SearchFilterContextProvider>
         <PostQueryContextProvider>
           <Stack.Navigator screenOptions={{ header: () => null }}>
+            <Stack.Screen name="LoginScreen" component={LoginScreen} />
             <Stack.Screen name="HomeTab" component={HomeTabNavigator} />
             <Stack.Screen name="FilterScreen" component={FilterComponent} />
             <Stack.Screen name="QueryScreen" component={QueryScreen} />
             <Stack.Screen name="DateTimePicker" component={Example} />
             <Stack.Screen name="PeopleScreen" component={People} />
             <Stack.Screen name="PostQueryScreen" component={PostQueryScreen} />
-            <Stack.Screen name="colleborateScreen" component={CollaborateScreen}/>
-            <Stack.Screen name="colleborateDetailsScreee" component={CollaborateDetailsScreen}/>
-            
+            <Stack.Screen
+              name="colleborateScreen"
+              component={CollaborateScreen}
+            />
+            <Stack.Screen
+              name="colleborateDetailsScreee"
+              component={CollaborateDetailsScreen}
+            />
           </Stack.Navigator>
         </PostQueryContextProvider>
       </SearchFilterContextProvider>

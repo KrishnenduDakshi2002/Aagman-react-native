@@ -8,7 +8,7 @@ import {
 } from "react-native";
 
 import dayjs from "dayjs";
-import relativeTime from 'dayjs/plugin/relativeTime'
+import relativeTime from "dayjs/plugin/relativeTime";
 
 dayjs.extend(relativeTime);
 
@@ -18,9 +18,6 @@ import { FlatList } from "react-native-gesture-handler";
 
 import { useFonts } from "expo-font";
 import { _fonts_ } from "../../styles/fonts";
-
-
-
 
 const QueryTileComponent = (props) => {
   const { styles, width, height } = useStyles();
@@ -43,11 +40,12 @@ const QueryTileComponent = (props) => {
   return (
     <View style={styles.container}>
       <View name="reactions and votes" style={styles.box1}>
-        <Pressable style={{ marginBottom: 20, alignItems: "center" }}
-        onPress={()=>{
-            (!isLiked) ? setLikes(likes+1): setLikes(likes-1);
+        <Pressable
+          style={{ marginBottom: 20, alignItems: "center" }}
+          onPress={() => {
+            !isLiked ? setLikes(likes + 1) : setLikes(likes - 1);
             setIsLiked(!isLiked);
-        }}
+          }}
         >
           <AntDesign
             name={isLiked ? "heart" : "hearto"}
@@ -57,42 +55,48 @@ const QueryTileComponent = (props) => {
 
           <Text>{likes}</Text>
         </Pressable>
-        <Pressable style={{ marginBottom: 20, alignItems: "center" }}
-
-        onPress={()=> props.navigation.navigate('QueryScreen')}  
-        // passing the current answers to Queryscreen for expanded version of question
+        <Pressable
+          style={{ marginBottom: 20, alignItems: "center" }}
+          // passing the current answers to Queryscreen for expanded version of question
         >
           <MaterialIcons name="question-answer" size={30} color="black" />
           <Text>{props.answers.length}</Text>
         </Pressable>
         <Pressable
-        onPress={()=>{
+          onPress={() => {
             setIsSaved(!isSaved);
-        }}
+          }}
         >
-        <Ionicons name={isSaved ? "bookmarks":"bookmarks-outline"} size={24} color="black" />
+          <Ionicons
+            name={isSaved ? "bookmarks" : "bookmarks-outline"}
+            size={24}
+            color="black"
+          />
         </Pressable>
       </View>
       <View style={styles.box2}>
         <Pressable
-        style={({pressed})=> [{opacity: pressed ? 0.5: 1}]}
-        // passing query to QueryScreen using route params
-        // unique way to do this
-        onPress = {()=> props.NavigateWithParams(props.query)}
+          style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1 }]}
+          // passing query to QueryScreen using route params
+          // unique way to do this
+          onPress={() => {
+            const {NavigateWithParams,...query} = props;
+            props.NavigateWithParams(query);
+          }}
         >
-            <Text
+          <Text
             numberOfLines={2}
             style={{ fontFamily: "bold", marginBottom: 5, color: "#0362C0" }}
-            >
-                {/* question from props */}
+          >
+            {/* question from props */}
             {props.question}
-            </Text>
+          </Text>
         </Pressable>
         <Text
           numberOfLines={2}
           style={{ fontFamily: "regular", fontSize: height / 60 }}
         >
-            {/* description for question from props */}
+          {/* description for question from props */}
           {props.description}
         </Text>
         <Text
@@ -103,7 +107,7 @@ const QueryTileComponent = (props) => {
             color: _colors_.dark_blue,
           }}
         >
-            {/* author for question from props */}
+          {/* author for question from props */}
           posted by {props.author}
         </Text>
         <Text
@@ -113,11 +117,11 @@ const QueryTileComponent = (props) => {
             textAlign: "right",
           }}
         >
-            {/* Post date from props */}
-          {dayjs(props.postDate).fromNow()}   
+          {/* Post date from props */}
+          {dayjs(props.postDate).fromNow()}
         </Text>
         <View>
-            {/* Tags from props */}
+          {/* Tags from props */}
           <FlatList
             data={props.tags}
             renderItem={RenderTags}

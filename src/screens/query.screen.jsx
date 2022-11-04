@@ -1,4 +1,4 @@
-import React, { useReducer, useState,useEffect } from "react";
+import React, { useReducer, useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -9,6 +9,8 @@ import {
   Pressable,
   Alert,
 } from "react-native";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -26,66 +28,141 @@ import AnswerComponent from "../components/atoms/answer.component";
 import { TextInput } from "react-native-gesture-handler";
 import InputComponent from "../components/atoms/Input.component";
 
-import { PostAnswerReducer, POST_ANSWER_INITIAL_STATE ,POSTANSWER_ACTION_TYPES} from "../utils/postAnswer.Reducer";
+import {
+  PostAnswerReducer,
+  POST_ANSWER_INITIAL_STATE,
+  POSTANSWER_ACTION_TYPES,
+} from "../utils/postAnswer.Reducer";
 import { usePostAnswerContext } from "../contexts/discussionContext";
+import { HOST } from "../config";
 
 const AnswerRenderFunction = ({ item }) => {
-  return <AnswerComponent
-  answer = {item.answer}
-  author = {item.author}
-  date = {item.date}
-  />;
+  return (
+    <AnswerComponent
+      answerId={item._id}
+      answer={item.answer}
+      author={item.author}
+      date={item.date}
+    />
+  );
 };
 
-const Footer = (props)=>{
+// form component
+const Footer = (props) => {
   const PostAnswerContext = usePostAnswerContext();
-  const {styles} = useStyles();
+  const { styles } = useStyles();
   return (
-    <View
-    
-    style={{marginVertical: 30}}
-    >
+    <View style={{ marginVertical: 30 }}>
       <Divider color={_colors_.dark_grey} />
       <InputComponent
-      multiline
-      style={styles.answer}
-      value={PostAnswerContext.state.answer}
-      onChangeTextFunction={(text)=> PostAnswerContext.setState({type: POSTANSWER_ACTION_TYPES.ANSWER,payload: text})}
-      placeholder={"Enter answer"}
-    />
+        multiline
+        style={styles.answer}
+        value={PostAnswerContext.state.answer}
+        onChangeTextFunction={(text) =>
+          PostAnswerContext.setState({
+            type: POSTANSWER_ACTION_TYPES.ANSWER,
+            payload: text,
+          })
+        }
+        placeholder={"Enter answer"}
+      />
       <Button
-      title={'Your answer'}
-      radius= {10}
-      titleStyle = {{fontFamily: 'regular'}}
-      containerStyle ={{marginBottom: 15}}
-      onPress = {()=>{
-        if( PostAnswerContext.state.answer!== ""){
-          PostAnswerContext.setState({type : POSTANSWER_ACTION_TYPES.DATE, payload: Date.now()})
-          props.setPostAnswerPressed(true);
+        title={"Your answer"}
+        radius={10}
+        titleStyle={{ fontFamily: "regular" }}
+        containerStyle={{ marginBottom: 15 }}
+        onPress={async () => {
+          if (PostAnswerContext.state.answer !== "") {
+            PostAnswerContext.setState({
+              type: POSTANSWER_ACTION_TYPES.DATE,
+              payload: Date.now(),
+            });
 
-        }else Alert.alert('please enter valid answer')
-      }}
+            // checking for token (or is user logged in)
+            const token = await AsyncStorage.getItem("authToken");
+
+            if (token === undefined || token === null) {
+              //do something
+            }
+
+            // posting the answer through api
+
+            fetch(`${HOST}/api/v1/discussion/answer/post`, {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify(
+                {
+                  answer : PostAnswerContext.state.answer,
+                  questionId : props.questionId
+                }
+              ),
+            }).then(res => res.json())
+            .then(data=>{
+              if(data.statusCode === 201){
+                props.setPostAnswerPressed(true);
+              }
+            });
+
+          } else Alert.alert("please enter valid answer");
+        }}
       />
     </View>
-  )
-}
+  );
+};
 
 const QueryScreen = ({ navigation, route }) => {
   const { styles, width, height } = useStyles();
-  const [query, setQuery] = useState(route.params.query);  // holding the total state of this screen
-  const [isPostAnswerPressed, setIsPostAnswerPressed] = useState(false);  // holding state of your answer button
-  const [PostAnswerState,PostAnswerDispatch] = useReducer(PostAnswerReducer,POST_ANSWER_INITIAL_STATE)  // holding state for answer
+  const [query, setQuery] = useState(route.params); // holding the total state of this screen
+  const [isPostAnswerPressed, setIsPostAnswerPressed] = useState(false); // holding state of your answer button
+
+  const [answers, setAnswers] = useState([]);
+
+  const [PostAnswerState, PostAnswerDispatch] = useReducer(
+    PostAnswerReducer,
+    POST_ANSWER_INITIAL_STATE
+  ); // holding state for answer
 
   const PostAnswerContext = usePostAnswerContext();
-  
+
+  const LoadAnswerDataFunction = () => {
+    fetch(`${HOST}/api/v1/discussion/answer/getAll`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        questionId: query.questionId,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setAnswers([...data.answers]);
+      });
+  };
+
   useEffect(() => {
+    LoadAnswerDataFunction();
     if(isPostAnswerPressed){
-      setQuery({...query, answers : [...query.answers, PostAnswerContext.state]})
-      PostAnswerContext.setState({type: POSTANSWER_ACTION_TYPES.CLEAR})
+      PostAnswerContext.setState({ type: POSTANSWER_ACTION_TYPES.CLEAR });
       setIsPostAnswerPressed(false);
     }
-  }, [isPostAnswerPressed])
-  
+  }, [isPostAnswerPressed]);
+
+  // useEffect(() => {
+  //   if (isPostAnswerPressed) {
+  //     setQuery({
+  //       ...query,
+  //       answers: [...query.answers, PostAnswerContext.state],
+  //     });
+  //     PostAnswerContext.setState({ type: POSTANSWER_ACTION_TYPES.CLEAR });
+  //     setIsPostAnswerPressed(false);
+  //   }
+  // }, [isPostAnswerPressed]);
 
   const [fontsLoaded] = useFonts(_fonts_);
 
@@ -98,9 +175,8 @@ const QueryScreen = ({ navigation, route }) => {
   };
 
   const Header = () => {
-
     return (
-      <View style={{backgroundColor:"white"}}>
+      <View style={{ backgroundColor: "white" }}>
         <Text
           style={{
             fontFamily: "bold",
@@ -153,26 +229,28 @@ const QueryScreen = ({ navigation, route }) => {
         <Text
           style={{ width: "100%", fontFamily: "medium", fontSize: height / 50 }}
         >
-          {query.answers.length} Answers
+          {answers.length} Answers
         </Text>
-
-        
       </View>
     );
   };
 
-
   if (!fontsLoaded) return null;
-
+  else if (answers === []) return null;
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
         // style={{backgroundColor:'white'}}
         showsVerticalScrollIndicator={false}
-        data={query.answers}
+        data={answers}
         renderItem={AnswerRenderFunction}
         ListHeaderComponent={Header}
-        ListFooterComponent ={<Footer setPostAnswerPressed ={(val)=> setIsPostAnswerPressed(val)}/>}
+        ListFooterComponent={
+          <Footer 
+          setPostAnswerPressed={(val) => setIsPostAnswerPressed(val)} 
+          questionId = {query.questionId}
+          />
+        }
       />
     </SafeAreaView>
   );
@@ -186,7 +264,7 @@ const useStyles = () => {
       justifyContent: "center",
       alignItems: "center",
       marginHorizontal: 10,
-      backgroundColor:'white'
+      backgroundColor: "white",
     },
     tags: {
       backgroundColor: "#CADFF5",
@@ -199,6 +277,7 @@ const useStyles = () => {
     },
     answer: {
       flexDirection: "row",
+      width: '100%',
       height: 150,
       borderWidth: 1,
       borderRadius: 15,
