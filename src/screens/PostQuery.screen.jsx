@@ -54,7 +54,7 @@ const Header = (props) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         if (data.statusCode === 201) {
 
           // setting this button (to pressed [true])
@@ -118,7 +118,7 @@ const Header = (props) => {
             if (tag !== "") {
               QueryDispatch({
                 type: POST_QUERY_ACTION_TYPE.TAG,
-                payload: tag,
+                payload: tag.toLowerCase(),
               });
             }
             setTag("");

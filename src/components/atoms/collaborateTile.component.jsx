@@ -22,10 +22,8 @@ import { Avatar } from "@rneui/themed";
 import { _fonts_ } from "../../styles/fonts";
 import { _colors_ } from "../../styles/colors";
 
-const CollaborateTileComponent = () => {
+const CollaborateTileComponent = (props) => {
   const { styles, height, width } = useStyles();
-  const imageUri =
-    "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1160&q=80";
 
   const RenderTags = ({ item }) => {
     return (
@@ -42,7 +40,7 @@ const CollaborateTileComponent = () => {
     <View style={styles.container}>
       <View style={styles.box1}>
         <View style={{ paddingHorizontal: 10 }}>
-          <Avatar size={80} rounded source={{ uri: imageUri }} />
+          <Avatar size={55} rounded source={{ uri: props.data.imageUri }} />
         </View>
         <View
           style={{
@@ -54,32 +52,24 @@ const CollaborateTileComponent = () => {
           }}
         >
           <Text
-            numberOfLines={1}
+            numberOfLines={2}
             style={{
               fontFamily: "bold",
               fontSize: height / 45,
               marginVertical: 5,
             }}
           >
-            Event name
+            {props.data.eventName}
           </Text>
           <Text
             numberOfLines={4}
             style={{
               fontFamily: "regular",
               fontSize: height / 60,
-              marginBottom: 5,
+              marginBottom: 10,
             }}
           >
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book. It has survived not
-            only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged. It was popularised in the 1960s
-            with the release of Letraset sheets containing Lorem Ipsum passages,
-            and more recently with desktop publishing software like Aldus
-            PageMaker including versions of Lorem Ipsum.
+            {props.data.description}
           </Text>
         </View>
       </View>
@@ -90,7 +80,7 @@ const CollaborateTileComponent = () => {
           flexDirection: "row",
           justifyContent: "flex-end",
           alignItems: "center",
-          paddingVertical: 5,
+          marginVertical: 5,
         }}
       >
         <Text
@@ -110,70 +100,69 @@ const CollaborateTileComponent = () => {
             fontSize: height / 55,
           }}
         >
-          User#123
+          {props.data.author.userName}
         </Text>
       </View>
       {/* Tags from props */}
       <FlatList
         // style={{backgroundColor:'red'}}
         contentContainerStyle={{ alignItems: "center" }}
-        data={["tag1", "tag2", "javascript", "malfunctioning"]}
+        data={props.data.skills}
         renderItem={RenderTags}
         horizontal
         showsHorizontalScrollIndicator={false}
       />
       <View name="social app && contact" style={styles.box2}>
-        <View style={styles.box2}>
+        <View style={{flexDirection: 'row',alignItems:'center',flex:1}}>
           <Pressable
             onPress={() =>
-              Linking.openURL(`https://github.com/KrishnenduDakshi2002`)
+              Linking.openURL(`${props.data.github}`)
             }
           >
             <SocialIcon
               type="github"
-              iconSize={20}
-              style={{ marginHorizontal: 10 }}
+              iconSize={15}
+              style={styles.iconStyle}
             />
           </Pressable>
           <Pressable
             onPress={() =>
                 Linking.openURL(
-                `https://www.linkedin.com/in/krishnendu-dakshi-624208224/`
+                `${props.data.linkedIn}`
                 )
             }
             >
             <SocialIcon
                 type="linkedin"
-                iconSize={20}
-                style={{ marginHorizontal: 10 }}
+                iconSize={15}
+                style={styles.iconStyle}
             />
             </Pressable>
           <Pressable
             onPress={() =>
-              Linking.openURL(`whatsapp://send?phone=${+916295702093}`)
+              Linking.openURL(`whatsapp://send?phone=${props.data.whatsApp}`)
             }
           >
             <SocialIcon
               type="whatsapp"
-              iconSize={20}
-              style={{ marginHorizontal: 10 }}
+              iconSize={15}
+              style={styles.iconStyle}
             />
           </Pressable>
           <Pressable
-            onPress={() => Linking.openURL(`mailto:${"kdakshi2018@gmail.com"}`)}
+            onPress={() => Linking.openURL(`mailto:${props.data.email}`)}
           >
             <View
-              style={{
+              style={[{
                 backgroundColor: "white",
                 borderRadius: 50,
                 borderWidth: 0.3,
                 padding: 10,
-                marginHorizontal: 10,
-              }}
+              },styles.iconStyle]}
             >
               <Image
                 source={require("../../assets/images/gmail.png")}
-                style={{ width: 25, height: 25 }}
+                style={{ width: 15, height: 15 }}
               />
             </View>
           </Pressable>
@@ -201,14 +190,15 @@ const useStyles = () => {
     container: {
       justifyContent: "center",
       alignItems: "center",
-      // backgroundColor: "#F6F6F6",
+      backgroundColor: "white",
       width: width,
-      height: 280,
+      height: 300,
       paddingVertical: 15,
       paddingHorizontal: 10,
+      marginTop: 7
     },
     box1: {
-      flex: 3.5,
+      height: '50%',
       width: "100%",
       // backgroundColor: "yellow",
       flexDirection: "row",
@@ -216,7 +206,6 @@ const useStyles = () => {
       alignItems: "center",
     },
     box2: {
-      flex: 1,
       width: "100%",
       //   backgroundColor: "green",
       flexDirection: "row",
@@ -233,6 +222,9 @@ const useStyles = () => {
       justifyContent: "center",
       alignItems: "center",
     },
+    iconStyle :{
+      marginHorizontal: 7
+    }
   });
   return { styles, width, height };
 };

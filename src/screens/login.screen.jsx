@@ -14,7 +14,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import InputComponent from "../components/atoms/Input.component";
 
 import { Button } from "@rneui/themed";
-import { HOST } from "../config";
+import { HOST } from "../config/index";
 
 const LoginScreen = ({ navigation }) => {
   const { styles, width, height } = useStyles();
@@ -22,6 +22,7 @@ const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState("");
 
   const LoginFunction = () => {
+    console.log('running',email,password);
     fetch(`${HOST}/api/v1/user/login`, {
       method: "POST",
       headers: {
@@ -50,7 +51,7 @@ const LoginScreen = ({ navigation }) => {
 
   const GetToken = async () => {
     const token = await AsyncStorage.getItem("authToken");
-    if (token !== null || token !== undefined) {
+    if (token != null || token != undefined) {
       fetch(`${HOST}/api/v1/user/verifyToken`, {
         method: "GET",
         headers: {

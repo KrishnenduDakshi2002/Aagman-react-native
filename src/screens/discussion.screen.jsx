@@ -65,11 +65,19 @@ const DiscussionScreen = ({ navigation }) => {
   // }, [postQuestionState.state])
 
   const filteredQuery = useMemo(() => {
-    // console.log('Running useMemo [disscussion]');
-    return Queries?.filter((query) => {
-      return query.question.toLowerCase().includes(searchText.toLowerCase());
-    });
-  }, [searchText, Queries]);
+    if(searchText.startsWith('#')){  // this for searching for tags
+      return Queries?.filter(query=>{
+        const tags = searchText.split(' ').map(tag=> tag.slice(1));  // tags from search text
+        const intersection = tags.filter(tag => query.tags.includes(tag.toLowerCase())) // intersection between search tags and query tags
+        if(intersection.length > 0) return true
+        else return false;
+      })
+    }else{
+      return Queries?.filter((query) => {   // this is for searching question name
+        return query.question.toLowerCase().includes(searchText.toLowerCase());
+      });
+    }
+  }, [searchText, Queries]); 
 
   // https://stackoverflow.com/a/67862414/16896561
   /// for navigating with params through flatlist component
@@ -80,6 +88,9 @@ navigation.navigate("QueryScreen", query);
   const renderItemFunction = ({ item }) => {
     return (
       <QueryTileComponent
+        //set search text from child
+        setSearchTagText = {(text)=> setSearchText(text)}
+
         questionId = {item._id}
         // passing NavigateWithParams function to component
         NavigateWithParams={NavigateWithParams}
@@ -90,8 +101,6 @@ navigation.navigate("QueryScreen", query);
         likes={item.likes}
         tags={item.tags}
         answers={item.answers}
-        // passing the whole question
-        // query={item}
       />
     );
   };

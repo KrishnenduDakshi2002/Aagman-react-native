@@ -29,9 +29,17 @@ const QueryTileComponent = (props) => {
 
   const RenderTags = ({ item }) => {
     return (
-      <View style={styles.tags}>
+      <Pressable
+        style={({ pressed }) => [
+          styles.tags,
+          {
+            opacity: pressed ? 0.7 : 1,
+          },
+        ]}
+        onPress = {()=>props.setSearchTagText(`#${item}`)}
+      >
         <Text style={{ color: "#000D8C" }}>{item}</Text>
-      </View>
+      </Pressable>
     );
   };
 
@@ -80,7 +88,7 @@ const QueryTileComponent = (props) => {
           // passing query to QueryScreen using route params
           // unique way to do this
           onPress={() => {
-            const {NavigateWithParams,...query} = props;
+            const { NavigateWithParams, ...query } = props;
             props.NavigateWithParams(query);
           }}
         >

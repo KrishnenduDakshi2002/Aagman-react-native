@@ -25,6 +25,7 @@ import BlogScreen from "../screens/blogs.screen";
 import SearchScreen from "../screens/search.screen";
 import SimilarInterestScreen from "../screens/similar.interest";
 import CollaborateScreen from "../screens/collaborate.screen";
+import ProfileScreen from "../screens/profile.screen";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -82,7 +83,7 @@ const HomeTabNavigator = () => {
           // tabBarColor: '#016D6A'
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="SimilarInterestScreen"
         component={SimilarInterestScreen}
         options={{
@@ -91,7 +92,7 @@ const HomeTabNavigator = () => {
             <AntDesign name="search1" size={24} color={color} />
           ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Collaborate"
         component={CollaborateScreen}
@@ -99,6 +100,16 @@ const HomeTabNavigator = () => {
           tabBarLabel: "",
           tabBarIcon: ({ color }) => (
             <AntDesign name="search1" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="ProfileScreen"
+        component={ProfileScreen}
+        options={{
+          tabBarLabel: "",
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="user-circle" size={24} color={color} />
           ),
         }}
       />

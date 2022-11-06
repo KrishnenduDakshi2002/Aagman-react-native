@@ -19,7 +19,7 @@ import HomeEventDialog from "../components/atoms/HomeEventDialog.component";
 
 import { HOST } from "../config";
 
-const renderItemFunction = ({ item, index, seperator }) => {
+const RenderItemFunction = ({ item }) => {
   return (
     <HomeEventItemComponent
       eventName={item.eventName}
@@ -72,7 +72,6 @@ const HomeScreen = ({ navigation, route }) => {
       });
 
     // adding status
-
   };
 
   useEffect(() => {
@@ -91,6 +90,7 @@ const HomeScreen = ({ navigation, route }) => {
     () => HandleFilters(state, filteredEvents),
     [state, filteredEvents]
   );
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" translucent={false} />
@@ -105,23 +105,25 @@ const HomeScreen = ({ navigation, route }) => {
         handleSearchText={(text) => setSearchText(text)}
         filterScreenName={"FilterScreen"}
       />
+      {/* {filteredEvents?.map((item) => (
+        <RenderItemFunction item={item} />
+      ))} */}
 
-    {
-      (events == null) ?
-      (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      {/* <FlatlistComponent data={EventData} style={styles.listContainer}/> */}
+
+      {events == null ? (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
           <Text>Loading....</Text>
         </View>
-      ):(
+      ) : (
         <FlatList
-          refreshControl={true}
           data={filteredEvents}
-          renderItem={renderItemFunction}
-          showsVerticalScrollIndicator={false}
+          renderItem={RenderItemFunction}
           contentContainerStyle={styles.listContainer}
         />
-      )
-    }
+      )}
 
       <HomeEventDialog
         isDialogVisible={isDialogVisible}

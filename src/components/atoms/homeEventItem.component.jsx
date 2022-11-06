@@ -14,20 +14,21 @@ import { _colors_ } from "../../styles/colors";
 
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
+import { StatusFunction } from "../../utils/statusFunction";
 
 dayjs.extend(localizedFormat);
 
-function setStatusIndicator(status){
-    switch(status){
-      case "ongoing":
-        return "success";
-      case "upcoming":
-          return "primary";
-      case "finished":
-          return "error";
-      default :
-        return "primary";
-    }
+function setStatusIndicator(status) {
+  switch (status) {
+    case "ongoing":
+      return "success";
+    case "upcoming":
+      return "primary";
+    case "finished":
+      return "error";
+    default:
+      return "primary";
+  }
 }
 
 const HomeEventItemComponent = (props) => {
@@ -46,6 +47,10 @@ const HomeEventItemComponent = (props) => {
     date = `${dayjs(props.startDate).format("DD MMM")}`;
   }
 
+  const status = (props.endDate === undefined)
+  ? StatusFunction(props.startDate, props.startDate)
+  : StatusFunction(props.startDate, props.endDate)
+
   if (!fontsLoaded) return null;
   return (
     <View style={styles.eventItemStyle}>
@@ -58,11 +63,11 @@ const HomeEventItemComponent = (props) => {
             {props.eventName}
           </Text>
         </View>
-        {/* <View style={styles.eventDescription}>
+        <View style={styles.eventDescription}>
           <Text>
             {props.description}
           </Text>
-        </View> */}
+        </View>
         <View style={styles.dateContainer}>
           <Text style={{ fontFamily: "regular", fontSize: height / 55 }}>
             {date}
@@ -85,7 +90,7 @@ const HomeEventItemComponent = (props) => {
           </Text>
         </View>
         <View style={styles.status}>
-          <Badge status={setStatusIndicator(props.status)} />
+          <Badge status={setStatusIndicator(status)} />
           <Text
             style={{
               fontFamily: "light",
@@ -93,7 +98,7 @@ const HomeEventItemComponent = (props) => {
               marginLeft: 5,
             }}
           >
-            {props.status}
+            {status}
           </Text>
         </View>
       </View>

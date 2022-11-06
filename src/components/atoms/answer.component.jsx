@@ -43,6 +43,7 @@ const useStyles = ()=>{
             backgroundColor:'#E2FDFD',
             justifyContent:"center",
             alignItems:"center",
+            borderRadius: 10,
             marginTop: 10,
             paddingVertical: 20,
             paddingHorizontal: 10

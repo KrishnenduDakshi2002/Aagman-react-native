@@ -176,7 +176,7 @@ const QueryScreen = ({ navigation, route }) => {
 
   const Header = () => {
     return (
-      <View style={{ backgroundColor: "white" }}>
+      <View style={{ backgroundColor: "white",width: '100%' }}>
         <Text
           style={{
             fontFamily: "bold",
@@ -240,7 +240,7 @@ const QueryScreen = ({ navigation, route }) => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        // style={{backgroundColor:'white'}}
+        style={{width:'100%',paddingHorizontal: 15}}
         showsVerticalScrollIndicator={false}
         data={answers}
         renderItem={AnswerRenderFunction}
@@ -263,8 +263,9 @@ const useStyles = () => {
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      marginHorizontal: 10,
+      // marginHorizontal: 10,
       backgroundColor: "white",
+      // width: width
     },
     tags: {
       backgroundColor: "#CADFF5",
