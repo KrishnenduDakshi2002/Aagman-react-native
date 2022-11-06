@@ -142,8 +142,8 @@ const Header = (props) => {
         placeholder={"Enter description"}
       />
       <View style={{ width: width, flexWrap: "wrap", flexDirection: "row" }}>
-        {QueryState.tags?.map((tag) => (
-          <RenderTags key={tag.id} item={tag} />
+        {QueryState.tags?.map((tag,index) => (
+          <RenderTags key={index} item={tag} />
         ))}
       </View>
       <View
@@ -217,7 +217,10 @@ const PostQueryScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <ScrollView
+      showsVerticalScrollIndicator = {false}
+      keyboardShouldPersistTaps='handled'
+      >
         <Header navigationFunction={navigationFuntion} />
       </ScrollView>
     </SafeAreaView>

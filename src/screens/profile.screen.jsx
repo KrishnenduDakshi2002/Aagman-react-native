@@ -3,9 +3,10 @@ import {
 StyleSheet, 
 Text, 
 View, 
+ScrollView,
+TextInput,FlatList,
 useWindowDimensions, 
 SafeAreaView} from 'react-native'
-import { FlatList, TextInput } from 'react-native-gesture-handler';
 
 import { Button } from '@rneui/themed';
 
@@ -32,21 +33,25 @@ const ProfileScreen = ()=>{
 
     return(
     <SafeAreaView style={styles.container}>
-        <Input
-        value = {inputText}
-        setValue = {(text)=> setInputText(text)}
-        />
-        <Button
-        title={'add'}
-        onPress = {()=>{
-            setTags([...tags,inputText]);
-            setInputText("");
-        }}
-        />
-        <FlatList
-        data={tags}
-        renderItem={({item})=> <Text>{item}</Text>}
-        />
+        <ScrollView>
+            <Input
+            value = {inputText}
+            setValue = {(text)=> setInputText(text)}
+            />
+            <Button
+            title={'add'}
+            onPress = {()=>{
+                setTags([...tags,inputText]);
+                setInputText("");
+            }}
+            />
+            <FlatList
+            horizontal
+            data={tags}
+            renderItem={({item})=> <Text>{item}</Text>}
+            />
+
+        </ScrollView>
     </SafeAreaView>
 )
 }
