@@ -29,7 +29,7 @@ export default function App() {
       <SearchFilterContextProvider>
         <PostQueryContextProvider>
           <Stack.Navigator screenOptions={{ header: () => null }}>
-            {/* <Stack.Screen name="LoginScreen" component={LoginScreen} /> */}
+            <Stack.Screen name="LoginScreen" component={LoginScreen} />
             <Stack.Screen name="HomeTab" component={HomeTabNavigator} />
             <Stack.Screen name="FilterScreen" component={FilterComponent} />
             <Stack.Screen name="QueryScreen" component={QueryScreen} />

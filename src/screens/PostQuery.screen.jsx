@@ -12,6 +12,7 @@ import {
   FlatList,
   Pressable,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import {
   usePostQueryState,
@@ -23,16 +24,21 @@ import { HOST } from "../config";
 
 import { Entypo } from "@expo/vector-icons";
 
-import { Button, Input } from "@rneui/themed";
+import { Button } from "@rneui/themed";
 
 import { useFonts } from "expo-font";
 import { _fonts_ } from "../styles/fonts";
 import { POST_QUERY_ACTION_TYPE } from "../utils/PostQuery.Reducer";
 import InputComponent from "../components/atoms/Input.component";
+import { ScrollView } from "react-native-gesture-handler";
 
 const Header = (props) => {
   const { styles, width, height } = useStyles();
-  const [tag, setTag] = useState("");
+  const [tag, setTag] = useState([]);
+  const [inputText, setInputText] = useState("");
+
+  const [activityIndicatorVisible, setActivityIndicatorVisible] =
+    useState(false);
   const QueryState = usePostQueryState();
   const QueryDispatch = usePostQueryDispatch();
 
@@ -43,6 +49,7 @@ const Header = (props) => {
   const PostDataFunction = async () => {
     const token = await AsyncStorage.getItem("authToken");
     const { id, author, ...question } = QueryState; // by this kinda excluding id and author
+    setActivityIndicatorVisible(true);
     fetch(`${HOST}/api/v1/discussion/question/post`, {
       method: "POST",
       headers: {
@@ -54,15 +61,44 @@ const Header = (props) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        // console.log(data);
         if (data.statusCode === 201) {
-
           // setting this button (to pressed [true])
           postQuestionState.setState(!postQuestionState.state);
+
+          //set actiivity indicator
+          setActivityIndicatorVisible(false);
           // then navigate to discussion screen
           props.navigationFunction();
+        } else if (
+          data.statusCode === 500 &&
+          data.error.name === "TokenExpiredError"
+        ) {
+          Alert.alert("Error", "session expired. Please login again");
         }
       });
+  };
+
+  const RenderTags = ({ item }) => {
+    return (
+      <View style={styles.tags}>
+        <Text style={{ color: "#000D8C" }}>{item}</Text>
+        <Pressable
+          onPress={() =>
+            QueryDispatch({
+              type: POST_QUERY_ACTION_TYPE.CLEAR_TAG,
+              payload: item,
+            })
+          }
+        >
+          <Entypo
+            name="cross"
+            size={24}
+            color="#000D8C"
+            style={{ marginLeft: 20 }}
+          />
+        </Pressable>
+      </View>
+    );
   };
 
   return (
@@ -71,10 +107,15 @@ const Header = (props) => {
         // backgroundColor: "pink",
         width: width,
         marginBottom: 30,
-        marginTop: 50,
+        // marginTop: 50,
         paddingHorizontal: 15,
       }}
     >
+      <ActivityIndicator
+        animating={activityIndicatorVisible}
+        size={"large"}
+        color="#0000ff"
+      />
       <InputComponent
         multiline
         style={styles.question}
@@ -100,6 +141,11 @@ const Header = (props) => {
         }
         placeholder={"Enter description"}
       />
+      <View style={{ width: width, flexWrap: "wrap", flexDirection: "row" }}>
+        {QueryState.tags?.map((tag) => (
+          <RenderTags key={tag.id} item={tag} />
+        ))}
+      </View>
       <View
         style={{
           flexDirection: "row",
@@ -160,47 +206,20 @@ const Header = (props) => {
 const PostQueryScreen = ({ navigation }) => {
   const { styles, width, height } = useStyles();
 
-  const QueryState = usePostQueryState();
-  const QueryDispatch = usePostQueryDispatch();
 
   const navigationFuntion = () => {
     navigation.navigate("DisscussionScreen");
   };
 
-  const RenderTags = ({ item }) => {
-    return (
-      <View style={styles.tags}>
-        <Text style={{ color: "#000D8C" }}>{item}</Text>
-        <Pressable
-          onPress={() =>
-            QueryDispatch({
-              type: POST_QUERY_ACTION_TYPE.CLEAR_TAG,
-              payload: item,
-            })
-          }
-        >
-          <Entypo
-            name="cross"
-            size={24}
-            color="#000D8C"
-            style={{ marginLeft: 30 }}
-          />
-        </Pressable>
-      </View>
-    );
-  };
+  
   const [fontsLoaded] = useFonts(_fonts_);
   if (!fontsLoaded) return null;
 
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        contentContainerStyle={{ alignItems: "center" }}
-        ListHeaderComponent={<Header navigationFunction={navigationFuntion} />}
-        data={QueryState.tags}
-        showsVerticalScrollIndicator={false}
-        renderItem={RenderTags}
-      />
+      <ScrollView>
+        <Header navigationFunction={navigationFuntion} />
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -210,7 +229,7 @@ const useStyles = () => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      justifyContent: "center",
+      justifyContent: "flex-start",
       alignItems: "center",
       backgroundColor: "white",
     },
