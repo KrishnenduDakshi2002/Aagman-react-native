@@ -26,6 +26,7 @@
     "expo-status-bar": "~1.4.0",
     "node-fetch": "^3.2.10",
     "react": "18.0.0",
+    "react-loading-skeleton": "^3.1.0",
     "react-native": "0.69.6",
     "react-native-calendars": "^1.1290.0",
     "react-native-gesture-handler": "~2.5.0",

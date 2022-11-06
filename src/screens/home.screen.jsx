@@ -18,6 +18,7 @@ import { useFilterState } from "../contexts/filterContext";
 import HomeEventDialog from "../components/atoms/HomeEventDialog.component";
 
 import { HOST } from "../config";
+import LoadingScreen from "../loading/homeScreen/loading.screen";
 
 const RenderItemFunction = ({ item }) => {
   return (
@@ -105,18 +106,9 @@ const HomeScreen = ({ navigation, route }) => {
         handleSearchText={(text) => setSearchText(text)}
         filterScreenName={"FilterScreen"}
       />
-      {/* {filteredEvents?.map((item) => (
-        <RenderItemFunction item={item} />
-      ))} */}
-
-      {/* <FlatlistComponent data={EventData} style={styles.listContainer}/> */}
-
+    
       {events == null ? (
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          <Text>Loading....</Text>
-        </View>
+        <LoadingScreen/>
       ) : (
         <FlatList
           data={filteredEvents}

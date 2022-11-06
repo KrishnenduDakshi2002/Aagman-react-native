@@ -10,6 +10,8 @@ import {
 
 import { HOST } from "../config/index";
 
+import LoadingScreen from '../loading/collaborateScreen/loading.screen'
+
 import CollaborateTileComponent from "../components/atoms/collaborateTile.component";
 import SearchBarComponent from "../components/atoms/searchBar.component";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -18,7 +20,7 @@ import { _colors_ } from "../styles/colors";
 const CollaborateScreen = ({ navigation }) => {
   const { styles, width, height } = useStyles();
   const [searchText, setsearchText] = useState("");
-  const [collabPosts, setCollabPosts] = useState([]);
+  const [collabPosts, setCollabPosts] = useState(null);
 
   const LoadCollabDataFunction = async () => {
     const token = await AsyncStorage.getItem("authToken");
@@ -46,6 +48,7 @@ const CollaborateScreen = ({ navigation }) => {
   const RenderItemFunction = ({ item }) => {
     return <CollaborateTileComponent data={item} />;
   };
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -79,12 +82,22 @@ const CollaborateScreen = ({ navigation }) => {
         />
       </View>
 
-      <FlatList
-        showsVerticalScrollIndicator={false}
-        data={collabPosts}
-        renderItem={RenderItemFunction}
-        contentContainerStyle = {{width: width,backgroundColor:_colors_.light_mode_screen_background_color}}
-      />
+      {
+        collabPosts == null?
+        (
+            <LoadingScreen/>
+        ):
+        (
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            data={collabPosts}
+            renderItem={RenderItemFunction}
+            contentContainerStyle = {{width: width,backgroundColor:_colors_.light_mode_screen_background_color}}
+          />
+
+        )
+      }
+
     </SafeAreaView>
   );
 };

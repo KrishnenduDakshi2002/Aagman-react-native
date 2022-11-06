@@ -22,6 +22,7 @@ import {
 } from "../contexts/discussionContext";
 import { POST_QUERY_ACTION_TYPE } from "../utils/PostQuery.Reducer";
 import { HOST } from "../config";
+import LoadingScreen from "../loading/discussionScreen/loading.screen";
 
 const DiscussionScreen = ({ navigation }) => {
   const { styles, width, height } = useStyles();
@@ -136,12 +137,18 @@ navigation.navigate("QueryScreen", query);
         />
       </View>
 
-      <FlatList
-        data={filteredQuery}
-        style={{ backgroundColor: _colors_.light_mode_screen_background_color }}
-        showsVerticalScrollIndicator={false}
-        renderItem={renderItemFunction}
-      />
+      {
+        Queries == null ? 
+        (<LoadingScreen/>):
+        (
+          <FlatList
+            data={filteredQuery}
+            style={{ backgroundColor: _colors_.light_mode_screen_background_color }}
+            showsVerticalScrollIndicator={false}
+            renderItem={renderItemFunction}
+          />
+        )
+      }
       <Pressable
         style={styles.create_query_btn}
         onPress={() => navigation.navigate("PostQueryScreen")}
