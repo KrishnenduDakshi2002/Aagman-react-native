@@ -63,12 +63,16 @@ const Header = (props) => {
       .then((data) => {
         if (data.statusCode === 201) {
           // setting this button (to pressed [true])
-          postQuestionState.setState(!postQuestionState.state);
+          postQuestionState.setState(true);
 
           //set actiivity indicator
           setActivityIndicatorVisible(false);
-          // then navigate to discussion screen
+
+          QueryDispatch({ type: POST_QUERY_ACTION_TYPE.CLEAR }); // clearing the previous state for postQuery reducer
+          
           props.navigationFunction();
+          
+          
         } else if (
           data.statusCode === 500 &&
           data.error.name === "TokenExpiredError"
@@ -192,8 +196,9 @@ const Header = (props) => {
               payload: Date.now,
             });
 
-            //posting the question
+            //posting the question 
             PostDataFunction();
+            
           } else {
             Alert.alert("Please enter value");
           }
